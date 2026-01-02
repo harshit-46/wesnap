@@ -8,10 +8,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public */}
         <Route path="/" element={<Login />} />
-
-        {/* Protected */}
         <Route
           path="/feed"
           element={
