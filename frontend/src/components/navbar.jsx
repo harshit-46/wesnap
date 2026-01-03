@@ -17,8 +17,8 @@ export default function Navbar({ currentUser, currentPage = 'home' }) {
     }, []);
 
     const handleLogout = () => {
-        // Implement logout logic here
-        alert('Logging out...');
+        res.clearCookie("token");
+        navigate("/");
     };
 
     const user = currentUser || {

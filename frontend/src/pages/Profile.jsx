@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Post from '../components/Post';
+import { useAuth } from "../context/useAuth";
 
 // Main Profile Page
 export default function ProfilePage() {
+    const {logout} = useAuth();
     const [activeTab, setActiveTab] = useState('posts');
     const [posts, setPosts] = useState([
         {
@@ -58,6 +60,10 @@ export default function ProfilePage() {
         }
     };
 
+    const handleLogout = async () => {
+        await logout();
+    };
+
     return (
         <div className="min-h-screen bg-zinc-950 text-white">
             {/* Header */}
@@ -77,7 +83,7 @@ export default function ProfilePage() {
                             <a href="/" className="text-zinc-400 hover:text-white font-medium transition duration-200 text-sm">
                                 Home
                             </a>
-                            <button className="bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-2 px-5 rounded-lg transition duration-200 text-sm">
+                            <button className="bg-zinc-800 hover:bg-zinc-700 text-white font-medium py-2 px-5 rounded-lg transition duration-200 text-sm" onClick={handleLogout}>
                                 Logout
                             </button>
                         </div>

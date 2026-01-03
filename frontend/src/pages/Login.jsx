@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from "../context/useAuth";
 import { Navigate } from "react-router-dom";
 
-export default function LoginPage() {
+export default function Login() {
     const { user, loading, login } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
@@ -51,7 +51,6 @@ export default function LoginPage() {
             <div className="w-full max-w-md">
                 {/* Logo/Brand */}
                 <div className="text-center mb-8">
-
                     <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
                     <p className="text-zinc-400 text-sm">Sign in to continue to Vibely</p>
                 </div>

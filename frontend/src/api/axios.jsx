@@ -5,7 +5,6 @@ const api = axios.create({
     withCredentials: true,
 });
 
-// Optional: global response interceptor
 api.interceptors.response.use(
     (response) => response,
     (error) => {
