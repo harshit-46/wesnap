@@ -4,6 +4,28 @@ const postModel = require("../models/post");
 const upload = require("../middlewares/upload");
 const isLoggedIn = require("../middlewares/isLoggedin");
 
+router.get("/user/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+        console.log("Fetching posts for user:", userId);
+
+        const posts = await postModel.find({ userId: userId })
+            .populate("userId", "username")
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            posts
+        });
+    } catch (error) {
+        console.error("Error fetching user posts:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch posts"
+        });
+    }
+});
+
 router.post(
     "/",
     isLoggedIn,

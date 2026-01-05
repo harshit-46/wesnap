@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import Post from '../components/Post';
 import { useAuth } from "../context/useAuth";
 import { Link } from 'react-router-dom';
 import Navbar from '../components/navbar';
 
 export default function ProfilePage() {
-    const {user , logout} = useAuth();
+    const {user} = useAuth();
     const [activeTab, setActiveTab] = useState('posts');
     const [posts, setPosts] = useState([]);
-
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/api/posts/user/${user._id}`,
+                    { credentials: "include" }
+                );
+    
+                const data = await response.json();
+                setPosts(data.posts);
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+            }
+        };
+    
+        if (user?._id) {
+            fetchPosts();
+        }
+    }, [user?._id]);
+    
     const currentUser = {name : user.name , username : user.username , joined : user.createdAt};
-    console.log(currentUser.joined);
+
+    const handleLike = () => {
+        
+    };
+
+    const handleComment = () => {
+
+    };
+
+    const handleDelete = () => {
+        
+    };
 
     return (
         <div className="min-h-screen bg-zinc-950 text-white">
@@ -108,7 +137,6 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* Posts Section */}
                 <section>
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-zinc-300">My Posts</h3>
@@ -122,7 +150,7 @@ export default function ProfilePage() {
                             {posts.length > 0 ? (
                                 posts.map(post => (
                                     <Post
-                                        key={post.id}
+                                        key={post._id}
                                         post={post}
                                         currentUser={currentUser}
                                         onLike={handleLike}

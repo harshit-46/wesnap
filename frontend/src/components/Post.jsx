@@ -8,30 +8,30 @@ export default function Post({ post, currentUser, onLike, onComment, onDelete })
     const handleCommentSubmit = (e) => {
         e.preventDefault();
         if (commentText.trim()) {
-            onComment(post.id, commentText);
+            onComment(post._id, commentText);
             setCommentText('');
         }
     };
 
-    const isLiked = post.likes.includes(currentUser.id);
+    //const isLiked = post.likes.includes(currentUser.id);
 
     return (
         <article className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition duration-200">
             {/* Post Header */}
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                    <a href={`/profile/${post.user.username}`} className="shrink-0">
+                    <a href={`/profile/${post.userId.username}`} className="shrink-0">
                         <div className="w-11 h-11 rounded-full bg-linear-to-br from-blue-600 to-blue-700 flex items-center justify-center text-sm font-semibold hover:scale-105 transition">
-                            {post.user.name.charAt(0)}
+                            {post.userId.name}
                         </div>
                     </a>
                     <div>
-                        <a href={`/profile/${post.user.username}`} className="hover:underline">
-                            <h4 className="font-semibold text-sm text-white">{post.user.name}</h4>
+                        <a href={`/profile/${post.userId.username}`} className="hover:underline">
+                            <h4 className="font-semibold text-sm text-white">{post.userId.name}</h4>
                         </a>
                         <div className="flex items-center gap-2">
-                            <a href={`/profile/${post.user.username}`} className="text-zinc-400 text-xs hover:underline">
-                                @{post.user.username}
+                            <a href={`/profile/${post.userId.username}`} className="text-zinc-400 text-xs hover:underline">
+                                @{post.userId.username}
                             </a>
                             <span className="text-zinc-600">•</span>
                             <small className="text-zinc-500 text-xs">{post.date}</small>
@@ -48,7 +48,7 @@ export default function Post({ post, currentUser, onLike, onComment, onDelete })
 
                     {showMenu && (
                         <div className="absolute right-0 mt-2 w-48 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg py-2 z-10">
-                            {currentUser.id === post.user.id ? (
+                            {currentUser._id === post.userId ? (
                                 <>
                                     <button className="w-full text-left px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-700 transition">
                                         Edit Post
@@ -86,11 +86,11 @@ export default function Post({ post, currentUser, onLike, onComment, onDelete })
 
             {/* Post Stats */}
             <div className="flex items-center gap-4 text-xs text-zinc-500 mb-3 pb-3 border-b border-zinc-800">
-                <span className="hover:underline cursor-pointer">{post.likes.length} likes</span>
-                <span className="hover:underline cursor-pointer">{post.comments.length} comments</span>
+                <span className="hover:underline cursor-pointer">222 likes</span>
+                <span className="hover:underline cursor-pointer">111 comments</span>
             </div>
 
-            {/* Post Actions */}
+            {/* Post Actions 
             <div className="flex items-center gap-6 pb-3 border-b border-zinc-800">
                 <button onClick={() => onLike(post.id)} className={`flex items-center gap-2 transition text-sm group ${isLiked ? 'text-red-500' : 'text-zinc-500 hover:text-red-500'}`}>
                     <svg className={`w-5 h-5 ${isLiked ? 'fill-red-500' : 'group-hover:fill-red-500'}`} fill={isLiked ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
@@ -113,7 +113,7 @@ export default function Post({ post, currentUser, onLike, onComment, onDelete })
                     <span>Share</span>
                 </button>
             </div>
-
+            */}
             {/* Comments Section */}
             {showComments && (
                 <div className="mt-4">
