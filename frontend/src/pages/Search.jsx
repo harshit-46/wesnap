@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import UserCard from '../components/UserCard';
 import Navbar from '../components/navbar';
 import { useAuth } from '../context/useAuth';
@@ -40,7 +40,7 @@ export default function SearchUsersPage() {
         }));
     };
 
-    /*const filteredUsers = users.filter(user => {
+    const filteredUsers = users.filter(user => {
         const matchesSearch = searchQuery === '' ||
             user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,7 +52,7 @@ export default function SearchUsersPage() {
         if (activeFilter === 'suggested') return matchesSearch && !user.followers.includes(currentUser.id);
 
         return matchesSearch;
-    });*/
+    });
 
     return (
         <div className="min-h-screen bg-zinc-950 text-white">
