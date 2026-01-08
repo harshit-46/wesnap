@@ -1,33 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import Post from '../components/Post';
-import { useAuth } from "../context/useAuth";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Navbar from '../components/navbar';
 
 export default function ProfilePage() {
-    const { user } = useAuth();
+    const { username } = useParams();
+    const [profileUser, setProfileUser] = useState(null);
     const [activeTab, setActiveTab] = useState('posts');
     const [posts, setPosts] = useState([]);
     useEffect(() => {
-        const fetchPosts = async () => {
+
+        const fetchUserAndPosts = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/posts/user/${user._id}`,
+                const userResponse = await fetch(`http://localhost:3000/api/users/u/${username}`, { credentials: "include" });
+                const userData = await userResponse.json();
+                setProfileUser(userData.user);
+
+                const profileId = userData.user._id;
+
+                const postResponse = await fetch(`http://localhost:3000/api/posts/user/${profileId}`,
                     { credentials: "include" }
                 );
-                const data = await response.json();
-
+                const data = await postResponse.json();
                 setPosts(data.posts);
+
             } catch (error) {
-                console.error("Error fetching posts:", error);
+                console.error("Error fetching user:", error);
             }
-        };
-
-        if (user?._id) {
-            fetchPosts();
         }
-    }, [user?._id]);
 
-    const currentUser = { name: user.name, username: user.username, joined: user.createdAt };
+        if (username) {
+            fetchUserAndPosts();
+        }
+    }, [username]);
 
     const handleLike = () => {
 
@@ -40,6 +45,15 @@ export default function ProfilePage() {
     const handleDelete = () => {
 
     };
+
+
+    if (!profileUser) {
+        return (
+            <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
+                Loading profile...
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-zinc-950 text-white">
@@ -59,7 +73,7 @@ export default function ProfilePage() {
                         <div className="flex justify-between items-start -mt-16 mb-4">
                             <div className="relative">
                                 <div className="w-32 h-32 rounded-full border-4 border-zinc-900 bg-linear-to-br from-blue-600 to-blue-700 flex items-center justify-center text-4xl font-bold shadow-xl">
-                                    {currentUser.name.charAt(0)}
+                                    {profileUser.name.charAt(0)}
                                 </div>
                                 <button className="absolute bottom-1 right-1 w-9 h-9 bg-zinc-800 hover:bg-zinc-700 rounded-full flex items-center justify-center border-2 border-zinc-900 transition">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,8 +88,8 @@ export default function ProfilePage() {
                         </div>
 
                         <div className="mb-4">
-                            <h2 className="text-2xl font-bold mb-1">{currentUser.name}</h2>
-                            <p className="text-zinc-400 text-sm mb-3">@{currentUser.username}</p>
+                            <h2 className="text-2xl font-bold mb-1">{profileUser.name}</h2>
+                            <p className="text-zinc-400 text-sm mb-3">@{profileUser.username}</p>
                             <p className="text-zinc-300 text-sm leading-relaxed mb-4">
                                 Software developer | Tech enthusiast | Coffee lover ☕ | Building cool things on the internet
                             </p>
@@ -96,7 +110,7 @@ export default function ProfilePage() {
                             </div>
                             <div className="text-center ml-auto">
                                 <p className="text-zinc-400 text-xs">Joined</p>
-                                <p className="text-sm font-medium">{new Date(currentUser.joined).toLocaleDateString("en-us", {
+                                <p className="text-sm font-medium">{new Date(profileUser.createdAt).toLocaleDateString("en-us", {
                                     month: "short",
                                     day: "numeric",
                                     year: "numeric"
@@ -156,7 +170,7 @@ export default function ProfilePage() {
                                     <Post
                                         key={post._id}
                                         post={post}
-                                        currentUser={currentUser}
+                                        profileUser={profileUser}
                                         onLike={handleLike}
                                         onDelete={handleDelete}
                                     />

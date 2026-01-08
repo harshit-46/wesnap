@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const apiAuthRoutes = require("./routes/apiAuth");
 const apiPostRoutes = require("./routes/apiPosts");
+const apiUserRoutes = require("./routes/apiUsers");
 const apiSearchRoutes = require("./routes/apiSearch");
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/auth", apiAuthRoutes);
+app.use("/api/users", apiUserRoutes);
 app.use("/api/posts", apiPostRoutes);
 app.use("/api/search" , apiSearchRoutes);
 
