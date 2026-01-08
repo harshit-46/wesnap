@@ -1,5 +1,7 @@
 export default function UserCard({ user, currentUser, onFollow }) {
-    const isFollowing = user.followers.includes(currentUser.id);
+    //const isFollowing = user.followers.includes(currentUser.id);
+    const followersCount = user.followers?.length || 0;
+
 
     return (
         <article className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 hover:border-zinc-700 transition duration-200">
@@ -28,7 +30,7 @@ export default function UserCard({ user, currentUser, onFollow }) {
                                 <span className="font-semibold text-white">{user.posts}</span> Posts
                             </span>
                             <span className="text-xs text-zinc-400">
-                                <span className="font-semibold text-white">{user.followers.length}</span> Followers
+                                <span className="font-semibold text-white">{followersCount}</span> Followers
                             </span>
                             <span className="text-xs text-zinc-400">
                                 <span className="font-semibold text-white">{user.following}</span> Following

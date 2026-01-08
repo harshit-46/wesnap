@@ -16,6 +16,7 @@ export default function ProfilePage() {
                 );
 
                 const data = await response.json();
+                console.log("Data is : ",data);
                 setPosts(data.posts);
             } catch (error) {
                 console.error("Error fetching posts:", error);

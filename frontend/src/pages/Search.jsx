@@ -1,9 +1,8 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import UserCard from '../components/UserCard';
 import Navbar from '../components/navbar';
 import { useAuth } from '../context/useAuth';
 
-// Main Search Users Page
 export default function SearchUsersPage() {
     const { user } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
@@ -13,20 +12,25 @@ export default function SearchUsersPage() {
     const currentUser = user;
 
     useEffect(() => {
+        if (!searchQuery.trim()) {
+            setUsers([]);
+            return;
+        }
+
         const fetchUsers = async () => {
-            const res = await fetch(
-                "http://localhost:3000/api/users" // ${import.meta.env.VITE_API_BASE_URL}
-            );
-            console.log(`fetching from http://localhost:3000/api/users`);
-            const data = await res.json();
-            console.log(data);
-            setUsers(data.users);
-            console.log(users);
+            try {
+                const res = await fetch(
+                    `http://localhost:3000/api/search?query=${searchQuery}`,
+                    { credentials: "include" }
+                );
+                const data = await res.json();
+                setUsers(data);
+            } catch (err) {
+                console.error(err);
+            }
         };
-
         fetchUsers();
-    }, []);
-
+    }, [searchQuery]);
 
     const handleFollow = (userId) => {
         setUsers(users.map(user => {
@@ -46,12 +50,11 @@ export default function SearchUsersPage() {
     const filteredUsers = users.filter(user => {
         const matchesSearch = searchQuery === '' ||
             user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.bio.toLowerCase().includes(searchQuery.toLowerCase());
+            user.username.toLowerCase().includes(searchQuery.toLowerCase());
 
         if (activeFilter === 'all') return matchesSearch;
         if (activeFilter === 'following') return matchesSearch && user.followers.includes(currentUser.id);
-        if (activeFilter === 'followers') return matchesSearch; 
+        if (activeFilter === 'followers') return matchesSearch;
         if (activeFilter === 'suggested') return matchesSearch && !user.followers.includes(currentUser.id);
 
         return matchesSearch;
@@ -95,7 +98,7 @@ export default function SearchUsersPage() {
                         <div className="space-y-3">
                             {filteredUsers.map(user => (
                                 <UserCard
-                                    key={user.id}
+                                    key={user._id}
                                     user={user}
                                     currentUser={currentUser}
                                     onFollow={handleFollow}
