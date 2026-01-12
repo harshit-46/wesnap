@@ -5,6 +5,7 @@ const apiPostRoutes = require("./routes/apiPosts");
 const apiUserRoutes = require("./routes/apiUsers");
 const apiSearchRoutes = require("./routes/apiSearch");
 const apiFollowRoutes = require("./routes/apiFollow");
+const apiFeedRoutes = require("./routes/apiFeed");
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
@@ -25,6 +26,7 @@ app.use("/api/users", apiUserRoutes);
 app.use("/api/posts", apiPostRoutes);
 app.use("/api/search" , apiSearchRoutes);
 app.use("/api/follow" , apiFollowRoutes);
+app.use("/api/feed" , apiFeedRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).send("Vibely API running 🚀");
