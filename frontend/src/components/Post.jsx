@@ -1,72 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { timeAgo } from '../utils/timeAgo';
 
-export default function Post({ post, currentUser, onLike, onComment, onDelete }) {
+function Post({ post, profileUser, onLike, onComment, onDelete }) {
     const [showComments, setShowComments] = useState(false);
     const [commentText, setCommentText] = useState('');
     const [showMenu, setShowMenu] = useState(false);
 
-    const handleCommentSubmit = (e) => {
-        e.preventDefault();
-        if (commentText.trim()) {
-            onComment(post._id, commentText);
-            setCommentText('');
-        }
-    };
+    const toggleMenu = useCallback(() => {
+        setShowMenu(prev => !prev);
+    }, []);
 
-    //const isLiked = post.likes.includes(currentUser.id);
+    const toggleComments = useCallback(() => {
+        setShowComments(prev => !prev);
+    }, []);
+
+    const handleCommentSubmit = useCallback(
+        (e) => {
+            e.preventDefault();
+            if (!commentText.trim()) return;
+
+            onComment?.(post._id, commentText);
+            setCommentText('');
+        },
+        [commentText, onComment, post._id]
+    );
+
+    const isOwnPost =
+        profileUser?._id && post?.userId?._id
+            ? profileUser._id === post.userId._id
+            : false;
 
     return (
-        <article className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition duration-200">
-            {/* Post Header */}
+        <article className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition">
+            {/* HEADER */}
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                     <Link to={`/profile/${post.userId.username}`} className="shrink-0">
-                        <div className="w-11 h-11 rounded-full bg-linear-to-br from-blue-600 to-blue-700 flex items-center justify-center text-sm font-semibold hover:scale-105 transition">
-                            {post.userId.name.charAt(0).toUpperCase()}
+                        <div className="w-11 h-11 rounded-full bg-linear-to-br from-blue-600 to-blue-700 flex items-center justify-center text-sm font-semibold">
+                            {(post.userId?.name || post.userId?.username || 'U')
+                                .charAt(0)
+                                .toUpperCase()}
                         </div>
                     </Link>
+
                     <div>
                         <Link to={`/profile/${post.userId.username}`} className="hover:underline">
-                            <h4 className="font-semibold text-sm text-white">{post.userId.name}</h4>
+                            <h4 className="font-semibold text-sm text-white">
+                                {post.userId?.name || 'Unknown'}
+                            </h4>
                         </Link>
-                        <div className="flex items-center gap-2">
-                            <Link to={`/profile/${post.userId.username}`} className="text-zinc-400 text-xs hover:underline">
-                                @{post.userId.username}
+                        <div className="flex items-center gap-2 text-xs text-zinc-400">
+                            <Link to={`/profile/${post.userId.username}`} className="hover:underline">
+                                @{post.userId?.username || 'unknown'}
                             </Link>
-                            <span className="text-zinc-600">•</span>
-                            <small className="text-zinc-500 text-xs">{timeAgo(post.createdAt)}</small>
+                            <span>•</span>
+                            <span>{timeAgo(post.createdAt)}</span>
                         </div>
                     </div>
                 </div>
 
+                {/* MENU */}
                 <div className="relative">
-                    <button onClick={() => setShowMenu(!showMenu)} className="text-zinc-500 hover:text-zinc-300 transition">
+                    <button
+                        onClick={toggleMenu}
+                        className="text-zinc-500 hover:text-zinc-300"
+                    >
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                            <path d="M12 8a2 2 0 100-4 2 2 0 000 4zm0 2a2 2 0 100 4 2 2 0 000-4zm0 6a2 2 0 100 4 2 2 0 000-4z" />
                         </svg>
                     </button>
 
                     {showMenu && (
-                        <div className="absolute right-0 mt-2 w-48 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg py-2 z-10">
-                            {currentUser._id === post.userId ? (
+                        <div className="absolute right-0 mt-2 w-44 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg py-1 z-10">
+                            {isOwnPost ? (
                                 <>
-                                    <button className="w-full text-left px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-700 transition">
-                                        Edit Post
-                                    </button>
-                                    <button onClick={() => onDelete(post.id)} className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-zinc-700 transition">
+                                    <button className="menu-btn">Edit Post</button>
+                                    <button
+                                        onClick={() => onDelete?.(post._id)}
+                                        className="menu-btn text-red-400"
+                                    >
                                         Delete Post
                                     </button>
                                 </>
                             ) : (
                                 <>
-                                    <button className="w-full text-left px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-700 transition">
-                                        Report Post
-                                    </button>
-                                    <button className="w-full text-left px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-700 transition">
-                                        Hide Post
-                                    </button>
+                                    <button className="menu-btn">Report Post</button>
+                                    <button className="menu-btn">Hide Post</button>
                                 </>
                             )}
                         </div>
@@ -74,106 +94,87 @@ export default function Post({ post, currentUser, onLike, onComment, onDelete })
                 </div>
             </div>
 
-            {/* Post Content */}
-            <div className="mb-4">
-                <p className="text-zinc-200 text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
-            </div>
+            {/* CONTENT */}
+            <p className="text-zinc-200 text-sm leading-relaxed whitespace-pre-wrap mb-4">
+                {post.content}
+            </p>
 
-            {/* Post Image */}
+            {/* IMAGE */}
             {post.imageUrl && (
-                <div className="rounded-lg overflow-hidden bg-zinc-800 border border-zinc-700 mb-4">
-                    <img src={post.imageUrl} className="w-full h-auto" alt="Post" />
+                <div className="rounded-lg overflow-hidden border border-zinc-700 mb-4">
+                    <img src={post.imageUrl} alt="Post" className="w-full h-auto" />
                 </div>
             )}
 
-            {/* Post Stats */}
-            <div className="flex items-center gap-4 text-xs text-zinc-500 mb-3 pb-3 border-b border-zinc-800">
-                <span className="hover:underline cursor-pointer">222 likes</span>
-                <span className="hover:underline cursor-pointer">111 comments</span>
+            {/* STATS */}
+            <div className="flex gap-4 text-xs text-zinc-500 mb-3">
+                <span>{post.likes?.length || 0} likes</span>
+                <span>{post.comments?.length || 0} comments</span>
             </div>
 
-            {/* Post Actions 
-            <div className="flex items-center gap-6 pb-3 border-b border-zinc-800">
-                <button onClick={() => onLike(post.id)} className={`flex items-center gap-2 transition text-sm group ${isLiked ? 'text-red-500' : 'text-zinc-500 hover:text-red-500'}`}>
-                    <svg className={`w-5 h-5 ${isLiked ? 'fill-red-500' : 'group-hover:fill-red-500'}`} fill={isLiked ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    <span>{isLiked ? 'Liked' : 'Like'}</span>
+            {/* ACTIONS */}
+            <div className="flex gap-6 text-sm text-zinc-500">
+                <button
+                    onClick={() => onLike?.(post._id)}
+                    className="hover:text-red-500 transition"
+                >
+                    Like
                 </button>
-
-                <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-2 text-zinc-500 hover:text-blue-500 transition text-sm group">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    <span>Comment</span>
-                </button>
-
-                <button className="flex items-center gap-2 text-zinc-500 hover:text-green-500 transition text-sm group ml-auto">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                    <span>Share</span>
+                <button
+                    onClick={toggleComments}
+                    className="hover:text-blue-500 transition"
+                >
+                    Comment
                 </button>
             </div>
-            */}
-            {/* Comments Section */}
+
+            {/* COMMENTS */}
             {showComments && (
-                <div className="mt-4">
-                    {/* Add Comment */}
-                    <div onSubmit={handleCommentSubmit} className="mb-4">
-                        <div className="flex gap-3">
-                            <div className="w-9 h-9 rounded-full bg-linear-to-br from-zinc-700 to-zinc-600 flex items-center justify-center text-xs font-semibold shrink-0">
-                                {currentUser.name.charAt(0)}
-                            </div>
-                            <div className="flex-1">
-                                <textarea
-                                    value={commentText}
-                                    onChange={(e) => setCommentText(e.target.value)}
-                                    rows="2"
-                                    placeholder="Write a comment..."
-                                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none transition"
-                                />
-                                <div className="flex justify-end gap-2 mt-2">
-                                    <button onClick={() => setShowComments(false)} type="button" className="text-zinc-400 hover:text-white text-xs px-3 py-1.5 rounded transition">
-                                        Cancel
-                                    </button>
-                                    <button onClick={handleCommentSubmit} type="button" className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-4 py-1.5 rounded-lg transition">
-                                        Comment
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                <div className="mt-4 space-y-4">
+                    <textarea
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        placeholder="Write a comment..."
+                        rows={2}
+                        className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm"
+                    />
+
+                    <div className="flex justify-end gap-2">
+                        <button
+                            onClick={toggleComments}
+                            className="text-xs text-zinc-400 hover:text-white"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleCommentSubmit}
+                            className="bg-blue-600 hover:bg-blue-700 text-xs px-4 py-1.5 rounded-lg"
+                        >
+                            Comment
+                        </button>
                     </div>
 
-                    {/* Comments List */}
-                    <div className="space-y-4">
-                        {post.comments.length > 0 ? (
-                            post.comments.map(comment => (
-                                <div key={comment.id} className="flex gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-linear-to-br from-zinc-700 to-zinc-600 flex items-center justify-center text-xs font-semibold shrink-0">
-                                        {comment.user.name.charAt(0)}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="bg-zinc-800 rounded-lg px-3 py-2">
-                                            <a href={`/profile/${comment.user.username}`} className="font-semibold text-sm hover:underline">
-                                                {comment.user.name}
-                                            </a>
-                                            <p className="text-zinc-200 text-sm mt-1">{comment.content}</p>
-                                        </div>
-                                        <div className="flex items-center gap-4 mt-1 ml-3">
-                                            <small className="text-zinc-500 text-xs">{comment.date}</small>
-                                            <button className="text-zinc-500 hover:text-zinc-300 text-xs transition">Like</button>
-                                            <button className="text-zinc-500 hover:text-zinc-300 text-xs transition">Reply</button>
-                                        </div>
-                                    </div>
+                    {post.comments?.length ? (
+                        post.comments.map((c) => (
+                            <div key={c._id} className="flex gap-3">
+                                <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs">
+                                    {(c.user?.name || 'U').charAt(0)}
                                 </div>
-                            ))
-                        ) : (
-                            <p className="text-center text-zinc-500 text-sm py-4">No comments yet. Be the first to comment!</p>
-                        )}
-                    </div>
+                                <div>
+                                    <p className="text-sm">
+                                        <span className="font-semibold">{c.user?.name}</span>{' '}
+                                        {c.content}
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-sm text-zinc-500">No comments yet</p>
+                    )}
                 </div>
             )}
         </article>
     );
 }
+
+export default React.memo(Post);
