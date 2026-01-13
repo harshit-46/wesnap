@@ -4,23 +4,29 @@ const postModel = require("../models/post");
 const upload = require("../middlewares/upload");
 const isLoggedIn = require("../middlewares/isLoggedin");
 
-router.get("/user/:userId", async (req, res) => {
+router.get("/user/:userId", isLoggedIn, async (req, res) => {
     try {
         const { userId } = req.params;
+        const currentUserId = req.user._id;
 
-        const posts = await postModel.find({ userId: userId })
+        const posts = await postModel.find({ userId })
             .populate("userId", "username name")
             .sort({ createdAt: -1 });
 
+        const postsWithLikeInfo = posts.map(post => ({
+            ...post.toObject(),
+            likedByMe: post.likes.includes(currentUserId),
+        }));
+
         res.status(200).json({
             success: true,
-            posts
+            posts: postsWithLikeInfo,
         });
     } catch (error) {
         console.error("Error fetching user posts:", error);
         res.status(500).json({
             success: false,
-            message: "Failed to fetch posts"
+            message: "Failed to fetch posts",
         });
     }
 });

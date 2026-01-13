@@ -88,7 +88,22 @@ export default function ProfilePage() {
 
     const { isFollowing, followersCount, followingCount } = followInfo;
 
-    const handleLike = useCallback(() => { }, []);
+    const handleLike = useCallback((postId, liked) => {
+        setPosts(prev =>
+            prev.map(p =>
+                p._id === postId
+                    ? {
+                        ...p,
+                        likedByMe: liked,
+                        likeCount: liked
+                            ? p.likeCount + 1
+                            : Math.max(0, p.likeCount - 1),
+                    }
+                    : p
+            )
+        );
+    }, []);
+
     const handleDelete = useCallback(() => { }, []);
 
     const handleFollow = useCallback(async (userId) => {
@@ -139,6 +154,17 @@ export default function ProfilePage() {
             }));
         }
     }, []);
+
+    const handleCommentAdded = useCallback((postId) => {
+        setPosts(prev =>
+            prev.map(p =>
+                p._id === postId
+                    ? { ...p, commentCount: p.commentCount + 1 }
+                    : p
+            )
+        );
+    }, []);
+
 
 
     const isOwnProfile =
@@ -256,6 +282,7 @@ export default function ProfilePage() {
                                     loggedInUser={loggedInUser}
                                     onLike={handleLike}
                                     onDelete={handleDelete}
+                                    onCommentAdded={handleCommentAdded}
                                 />
                             ))
                         ) : (

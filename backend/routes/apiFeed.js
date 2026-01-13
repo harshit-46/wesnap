@@ -6,10 +6,6 @@ const isLoggedIn = require("../middlewares/isLoggedin");
 
 router.get("/", isLoggedIn, async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ message: "Not authenticated" });
-        }
-
         const userId = req.user._id;
         const { cursor } = req.query;
 
@@ -18,7 +14,6 @@ router.get("/", isLoggedIn, async (req, res) => {
         }).select("following");
 
         const followingIds = follows.map(f => f.following);
-
         followingIds.push(userId);
 
         const query = {
@@ -33,12 +28,21 @@ router.get("/", isLoggedIn, async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(10)
             .populate("userId", "username name")
+            .lean();
 
-        res.json({ posts });
+        const enrichedPosts = posts.map(post => ({
+            ...post,
+            likedByMe: post.likes.some(
+                id => id.toString() === userId.toString()
+            ),
+        }));
+
+        res.json({ posts: enrichedPosts });
     } catch (err) {
         console.error("FEED ERROR:", err);
         res.status(500).json({ message: "Server error" });
     }
 });
+
 
 module.exports = router;
