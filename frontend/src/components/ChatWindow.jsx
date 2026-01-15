@@ -218,7 +218,7 @@ function ChatWindow({ selectedChat, onBack }) {
                                                 : "bg-zinc-800 text-zinc-200"
                                         } ${message.temp ? "opacity-60" : ""}`}
                                     >
-                                        <p className="text-sm break-words">
+                                        <p className="text-sm wrap-break-word">
                                             {message.content}
                                         </p>
                                         <span
