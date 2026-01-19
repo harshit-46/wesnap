@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Send, MoreVertical, Phone, Video } from "lucide-react";
 import { useAuth } from "../context/useAuth";
 import { useParams, useNavigate } from "react-router-dom";
-import socket from "../socket";
+import { useSocket } from "../context/SocketContext";
 
 function ChatWindow() {
+    const socket = useSocket();
     const { conversationId } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -61,17 +62,20 @@ function ChatWindow() {
 
     /* ================= SOCKET JOIN ================= */
     useEffect(() => {
-        if (!conversationId) return;
+        if (!socket || !socket.connected || !conversationId) return;
 
         socket.emit("joinConversation", conversationId);
 
         return () => {
             socket.emit("leaveConversation", conversationId);
         };
-    }, [conversationId]);
+    }, [socket, conversationId]);
+
 
     /* ================= RECEIVE MESSAGE ================= */
     useEffect(() => {
+        if (!socket) return;
+
         const handleReceive = (message) => {
             if (message.conversationId !== conversationId) return;
             setMessages((prev) => [...prev, message]);
@@ -80,11 +84,12 @@ function ChatWindow() {
         socket.on("receiveMessage", handleReceive);
 
         return () => socket.off("receiveMessage", handleReceive);
-    }, [conversationId]);
+    }, [socket, conversationId]);
+
 
     /* ================= SEND MESSAGE ================= */
     const handleSendMessage = () => {
-        if (!messageText.trim()) return;
+        if (!messageText.trim() || !socket?.connected) return;
 
         socket.emit("sendMessage", {
             conversationId,
@@ -93,7 +98,6 @@ function ChatWindow() {
 
         setMessageText("");
     };
-
 
     /* ================= AUTO SCROLL ================= */
     useEffect(() => {
@@ -189,7 +193,7 @@ function ChatWindow() {
                     onChange={(e) => setMessageText(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault(); 
+                            e.preventDefault();
                             handleSendMessage(e);
                         }
                     }}
