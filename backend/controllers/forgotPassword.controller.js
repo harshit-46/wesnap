@@ -35,11 +35,11 @@ exports.forgotPassword = async (req, res) => {
         to: user.email,
         subject: "Reset your Vibely password",
         html: `
-      <p>You requested a password reset.</p>
-      <p>
+        <p>You requested a password reset.</p>
+        <p>
         <a href="${resetUrl}">Click here to reset your password</a>
-      </p>
-      <p>This link expires in 10 minutes.</p>
+        </p>
+        <p>This link expires in 10 minutes.</p>
     `,
     });
 
