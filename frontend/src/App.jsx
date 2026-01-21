@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import CreatePost from "./pages/CreatePost";
 import ForgotPassword from "./pages/ForgotPassword";
 import ChatPage from "./pages/chat";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/resetpassword" element={<ForgotPassword/>} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />}/>
 
         {/* Protected routes */}
         <Route path="/feed" element={ <ProtectedRoute> <Feed /> </ProtectedRoute> }/>

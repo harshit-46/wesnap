@@ -8,7 +8,7 @@ export default function ForgotPasswordPage() {
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
@@ -17,39 +17,21 @@ export default function ForgotPasswordPage() {
             return;
         }
 
-        if (!/\S+@\S+\.\S+/.test(email)) {
-            setError("Please enter a valid email address");
-            return;
+        try {
+            setIsLoading(true);
+
+            await fetch("http://localhost:3000/api/reset/forgot-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+
+            setIsSuccess(true);
+        } catch (err) {
+            setError("Something went wrong. Try again.");
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(true);
-
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            setError("");
-
-            if (!email.trim()) {
-                setError("Email is required");
-                return;
-            }
-
-            try {
-                setIsLoading(true);
-
-                await fetch("localhost:3000/auth/forgot-password", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                });
-
-                setIsSuccess(true);
-            } catch (err) {
-                setError("Something went wrong. Try again.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
     };
 
     if (isSuccess) {
@@ -130,7 +112,7 @@ export default function ForgotPasswordPage() {
                     )}
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                             Email address
                         </label>
                         <div className="relative">
@@ -138,6 +120,7 @@ export default function ForgotPasswordPage() {
                                 <Mail className="h-5 w-5 text-gray-400" />
                             </div>
                             <input
+                                id="email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}

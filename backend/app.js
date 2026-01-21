@@ -12,6 +12,7 @@ const apiLikeRoutes = require("./routes/apiLike");
 const chatRoutes = require("./routes/chat.routes");
 const messageRoutes = require("./routes/message.routes");
 const apiConversationRoutes = require("./routes/conversation.routes");
+const apiForgotPasswordRoutes = require("./routes/apiReset");
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
@@ -33,6 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/auth", apiAuthRoutes);
+app.use("/api/reset", apiForgotPasswordRoutes);
 app.use("/api/users", apiUserRoutes);
 app.use("/api/posts", apiPostRoutes);
 app.use("/api/posts", apiLikeRoutes);
