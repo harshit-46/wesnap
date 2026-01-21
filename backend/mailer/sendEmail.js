@@ -1,18 +1,17 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 module.exports = async ({ to, subject, html }) => {
-    const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-        },
-    });
-
-    await transporter.sendMail({
-        from: `"Vibely" <${process.env.EMAIL_USER}>`,
-        to,
-        subject,
-        html,
-    });
+    try {
+            await resend.emails.send({
+            from: "Vibely <onboarding@resend.dev>",
+            to,
+            subject,
+            html,
+        });
+    } catch (err) {
+        console.error("RESEND ERROR:", err);
+        throw err;
+    }
 };
