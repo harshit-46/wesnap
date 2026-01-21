@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user");
 const isLoggedIn = require("../middlewares/isLoggedin");
+const { googleLogin, googleCallback } = require("../controllers/googleAuth.controller");
 const router = express.Router();
 
 /* REGISTER */
@@ -67,7 +68,7 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        const match = bcrypt.compare(password, user.password);
+        const match = await bcrypt.compare(password, user.password);
         if (!match) {
             return res.status(400).json({ message: "Invalid credentials" });
         }
@@ -95,6 +96,9 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 });
+
+router.get("/google", googleLogin);
+router.get("/google/callback", googleCallback);
 
 /* LOGOUT */
 router.post("/logout", (req, res) => {

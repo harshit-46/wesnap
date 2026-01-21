@@ -134,7 +134,7 @@ export default function ForgotPasswordPage() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className={`w-full py-3 rounded-lg font-medium transition
+                        className={`w-full py-3 rounded-lg font-medium cursor-pointer transition
                         ${isLoading
                                 ? "bg-gray-400 cursor-not-allowed"
                                 : "bg-black text-white hover:bg-gray-800"
