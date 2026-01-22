@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Post from '../components/Post';
 import { useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../components/navbar';
+import Navbar from '../components/Navbar';
 import { useAuth } from '../context/useAuth';
 
 export default function ProfilePage() {
