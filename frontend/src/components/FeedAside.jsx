@@ -1,108 +1,83 @@
-import React from 'react';
-import { Heart, MessageCircle, Sparkles } from 'lucide-react';
+import { Users, Sparkles, Activity } from "lucide-react";
 
-const FeedAside = () => {
-
-    const pulseItems = [
-        {
-            id: 1,
-            type: 'chat',
-            user: 'Harshit Gupta',
-            avatar: 'H',
-            preview: 'Typing...',
-            time: 'just now',
-            online: true,
-        },
-        {
-            id: 2,
-            type: 'reaction',
-            user: 'Aryan Singhal',
-            avatar: 'A',
-            preview: 'liked your post "Weekend vibes ☕"',
-            time: '5m ago',
-        },
-        {
-            id: 3,
-            type: 'reply',
-            user: 'Priya Sharma',
-            avatar: 'P',
-            preview: 'Same energy bro 🔥',
-            time: '12m ago',
-        },
-    ];
-
+export default function FeedAside() {
     return (
-        <aside
-            className="
-                hidden lg:block
-                w-90 dark:border-zinc-800
-                bg-white dark:bg-zinc-950
-            "
-        >
-            <div className="sticky top-0 z-10 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 p-4">
-                <h2 className="text-xl font-bold flex items-center gap-2 text-gray-900 dark:text-white">
-                    Vibe Pulse
-                    <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400 px-2 py-0.5 rounded-full animate-pulse">
-                        Live
-                    </span>
-                </h2>
-            </div>
+        <aside className="w-[320px] sticky top-8 space-y-5">
 
-            <div className="p-4 space-y-4">
-                {pulseItems.length === 0 ? (
-                    <div className="text-center py-10 text-zinc-500 dark:text-zinc-400">
-                        <Sparkles className="w-10 h-10 mx-auto mb-3 opacity-50" />
-                        <p className="text-sm">Your network is quiet right now...</p>
-                        <p className="text-xs mt-1">New vibes will appear here</p>
+            {/* Daily Vibe Orb */}
+            <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-lg">
+                <p className="text-sm text-gray-500 mb-2">Today's Global Vibe</p>
+
+                <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full bg-linear-to-br from-pink-500 to-purple-600 blur-[2px] shadow-xl animate-pulse" />
+                    <div>
+                        <h3 className="font-semibold">Chill & Creative 😌</h3>
+                        <p className="text-xs text-gray-400">Set your vibe</p>
                     </div>
-                ) : (
-                    pulseItems.map((item) => (
-                        <div
-                            key={item.id}
-                            className="flex items-start gap-3 p-3 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-900/70 transition-colors cursor-pointer border-l-2 border-blue-500/30 dark:border-blue-600/50"
-                        >
-                            <div className="relative">
-                                <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold shadow-sm">
-                                    {item.avatar}
-                                </div>
-                                {item.online && (
-                                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-zinc-950" />
-                                )}
-                            </div>
-
-                            <div className="flex-1 min-w-0">
-                                <p className="font-medium text-sm truncate text-gray-900 dark:text-white">
-                                    {item.user}
-                                </p>
-                                <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 mt-0.5">
-                                    {item.preview}
-                                </p>
-                                <p className="text-[10px] text-zinc-500 dark:text-zinc-500 mt-1">
-                                    {item.time}
-                                </p>
-                            </div>
-
-                            {item.type === 'chat' && (
-                                <MessageCircle className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
-                            )}
-                            {item.type === 'reaction' && (
-                                <Heart className="w-4 h-4 text-red-500 dark:text-red-400" />
-                            )}
-                            {item.type === 'reply' && (
-                                <MessageCircle className="w-4 h-4 text-blue-500 dark:text-blue-400" />
-                            )}
-                        </div>
-                    ))
-                )}
-
-                <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
-                    <button className="w-full py-2 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
-                        See all activity →
-                    </button>
                 </div>
             </div>
+
+            {/* Trending Pulse */}
+            <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-lg">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Activity size={18} /> Trending Pulse
+                </h3>
+
+                {[
+                    { label: "AI Talks", percent: 82 },
+                    { label: "Music", percent: 64 },
+                    { label: "Gaming", percent: 48 },
+                ].map((item) => (
+                    <div key={item.label} className="mb-3">
+                        <div className="flex justify-between text-sm mb-1">
+                            <span>{item.label}</span>
+                            <span>{item.percent}%</span>
+                        </div>
+                        <div className="h-2 bg-gray-200/50 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-zinc-600 rounded-full transition-all"
+                                style={{ width: `${item.percent}%` }}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Vibe Matches */}
+            <div className="bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-lg">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Users size={18} /> People Matching Your Vibe
+                </h3>
+
+                <div className="space-y-3">
+                    {["Aarav", "Meera", "Rohit"].map((name) => (
+                        <div key={name} className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-linear-to-br from-indigo-500 to-pink-500" />
+                                <p className="text-sm font-medium">{name}</p>
+                            </div>
+                            <button className="text-xs px-3 py-1 rounded-full bg-black text-white dark:bg-white dark:text-black hover:scale-105 transition">
+                                Connect
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Daily Challenge */}
+            <div className="bg-white/10  text-black dark:text-white rounded-2xl p-5 shadow-xl">
+                <h3 className="font-semibold flex items-center gap-2 mb-2">
+                    <Sparkles size={18} /> Daily Challenge
+                </h3>
+                <p className="text-sm opacity-90">
+                    Post something that feels peaceful 🌿
+                </p>
+
+                <button className="mt-3 text-xs px-3 py-1 bg-black/20 rounded-full hover:bg-black/20 transition">
+                    Accept Challenge
+                </button>
+            </div>
+
         </aside>
     );
-};
-
-export default FeedAside;
+}

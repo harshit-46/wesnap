@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import Post from "../components/Post";
 import FeedAside from "../components/FeedAside";
+import FeedSkeleton from "../components/skeletons/FeedSkeleton";
 
 export default function FeedPage() {
     const [posts, setPosts] = useState([]);
@@ -57,18 +58,13 @@ export default function FeedPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#F9FAFB] dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-8 h-8 border-4 border-neutral-300 border-t-neutral-600 rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-neutral-600 dark:text-neutral-400">Loading feed...</p>
-                </div>
-            </div>
+            <FeedSkeleton/>
         );
     }
 
     return (
         <div className="min-h-screen bg-[#F9FAFB] dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex">
-                <div className="fixed left-0 top-0 h-screen w-64 border-r border-neutral-200 dark:border-neutral-800 bg-[#F9FAFB] dark:bg-neutral-950 hidden lg:block">
+                <div className="fixed left-0 top-0 h-screen w-64 bg-[#F9FAFB] dark:bg-neutral-950 hidden lg:block">
                     <Navbar/>
                 </div>
 
@@ -83,10 +79,11 @@ export default function FeedPage() {
                             </p>
                         </div>
                     ) : (
-                        posts.map(post => (
+                        posts.map((post , index) => (
                             <Post
                                 key={post._id}
                                 post={post}
+                                index={index}
                                 onLike={handleLike}
                                 onDelete={handleDelete}
                                 onCommentAdded={handleCommentAdded}

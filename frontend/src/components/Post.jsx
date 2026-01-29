@@ -4,7 +4,7 @@ import { Heart, MessageCircle, MoreVertical } from "lucide-react";
 import { timeAgo } from "../utils/timeAgo";
 import { useAuth } from "../context/useAuth";
 
-function Post({ post, onLike, onDelete, onCommentAdded }) {
+function Post({ post, index, onLike, onDelete, onCommentAdded }) {
     const { user } = useAuth();
 
     const [showComments, setShowComments] = useState(false);
@@ -159,6 +159,9 @@ function Post({ post, onLike, onDelete, onCommentAdded }) {
                 <img
                     src={post.imageUrl}
                     alt="Post"
+                    loading={index < 3 ? "eager" : "lazy"}
+                    height={600}
+                    width={600}
                     className="rounded-xl mb-4 w-full object-cover border border-neutral-100 dark:border-neutral-800"
                 />
             )}

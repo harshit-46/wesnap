@@ -25,6 +25,11 @@ function Navbar() {
     const isDark = user.theme === 'dark';
     const pathname = location.pathname;
 
+    const isFeedPage = pathname === '/feed';
+    const [isHovered , setIsHovered] = useState(false);
+
+    const isExpanded = isHovered || isFeedPage;
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
@@ -69,35 +74,71 @@ function Navbar() {
     }, [logout]);
 
     return (
-        <aside className="
-            h-screen w-64 border-r border-neutral-200 dark:border-neutral-800
-            bg-[#F9FAFB] dark:bg-neutral-950">
+        <aside 
+            className={`
+                h-screen
+                bg-[#F9FAFB] dark:bg-neutral-950
+                transition-all duration-300 ease-in-out
+                ${isExpanded ? 'w-64' : 'w-20'}
+            `}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => {
+                setIsHovered(false);
+                setIsSettingsOpen(false);
+            }}
+        >
             <div className="flex flex-col h-full px-4 py-6">
 
-                <Link to="/feed" className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center shadow-sm">
+                <Link to="/feed" className="flex items-center gap-3 mb-8 overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center shadow-sm shrink-0">
                         <span className="text-lg font-bold text-white">V</span>
                     </div>
-                    <span className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
+                    <span 
+                        className={`
+                            text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100
+                            whitespace-nowrap transition-all duration-300
+                            ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0'}
+                        `}
+                    >
                         Vibely
                     </span>
                 </Link>
 
                 <nav className="flex flex-col gap-2 flex-1">
 
-                    <NavItem to="/feed" active={pathname === '/feed'} icon={Home}>
+                    <NavItem 
+                        to="/feed" 
+                        active={pathname === '/feed'} 
+                        icon={Home}
+                        isExpanded={isExpanded}
+                    >
                         Home
                     </NavItem>
 
-                    <NavItem to="/search" active={pathname.startsWith('/search')} icon={Search}>
+                    <NavItem 
+                        to="/search" 
+                        active={pathname.startsWith('/search')} 
+                        icon={Search}
+                        isExpanded={isExpanded}
+                    >
                         Search
                     </NavItem>
 
-                    <NavItem to="/createpost" active={pathname === '/createpost'} icon={PlusSquare}>
+                    <NavItem 
+                        to="/createpost" 
+                        active={pathname === '/createpost'} 
+                        icon={PlusSquare}
+                        isExpanded={isExpanded}
+                    >
                         New Post
                     </NavItem>
 
-                    <NavItem to="/chat" active={pathname.startsWith('/chat')} icon={MessageCircle}>
+                    <NavItem 
+                        to="/chat" 
+                        active={pathname.startsWith('/chat')} 
+                        icon={MessageCircle}
+                        isExpanded={isExpanded}
+                    >
                         Messages
                     </NavItem>
 
@@ -105,6 +146,7 @@ function Navbar() {
                         to={`/u/${currentUser.username}`}
                         active={pathname.startsWith('/u/')}
                         icon={User}
+                        isExpanded={isExpanded}
                     >
                         Profile
                     </NavItem>
@@ -122,15 +164,23 @@ function Navbar() {
                                 }
                             `}
                         >
-                            <Settings size={20} />
-                            <span className="text-sm font-medium">Settings</span>
+                            <Settings size={20} className="shrink-0" />
+                            <span 
+                                className={`
+                                    text-sm font-medium whitespace-nowrap transition-all duration-300
+                                    ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0'}
+                                `}
+                            >
+                                Settings
+                            </span>
                         </button>
 
-                        {isSettingsOpen && (
+                        {isSettingsOpen && isExpanded && (
                             <div className="
                                 absolute left-0 bottom-full mb-2 w-64 rounded-xl shadow-lg
                                 bg-white dark:bg-neutral-900
                                 border border-neutral-200 dark:border-neutral-800
+                                z-50
                             ">
                                 <div className="px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
                                     <p className="font-medium text-sm text-neutral-900 dark:text-neutral-100">
@@ -186,7 +236,7 @@ function Navbar() {
     );
 }
 
-const NavItem = React.memo(({ to, active, icon: Icon, children }) => (
+const NavItem = React.memo(({ to, active, icon: Icon, children, isExpanded }) => (
     <Link
         to={to}
         className={`
@@ -197,8 +247,15 @@ const NavItem = React.memo(({ to, active, icon: Icon, children }) => (
             }
         `}
     >
-        <Icon size={20} />
-        <span>{children}</span>
+        <Icon size={20} className="shrink-0" />
+        <span 
+            className={`
+                whitespace-nowrap transition-all duration-300
+                ${isExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0'}
+            `}
+        >
+            {children}
+        </span>
     </Link>
 ));
 

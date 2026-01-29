@@ -1,7 +1,7 @@
+import React , {lazy , Suspense} from "react";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Login from "./pages/Login";
-import Feed from "./pages/Feed";
 import Signup from "./pages/Signup";
 import Search from "./pages/Search";
 import Profile from "./pages/Profile";
@@ -9,6 +9,9 @@ import CreatePost from "./pages/CreatePost";
 import ForgotPassword from "./pages/ForgotPassword";
 import ChatPage from "./pages/chat";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import FeedSkeleton from "./components/skeletons/FeedSkeleton";
+
+const FeedPage = lazy(() => import("./pages/Feed"));
 
 const App = () => {
   return (
@@ -20,7 +23,12 @@ const App = () => {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />}/>
 
         {/* Protected routes */}
-        <Route path="/feed" element={ <ProtectedRoute> <Feed /> </ProtectedRoute> }/>
+        <Route path="/feed" element={ 
+          <ProtectedRoute>
+            <Suspense fallback={<FeedSkeleton/>}>
+              <FeedPage />
+            </Suspense> 
+          </ProtectedRoute> }/>
         <Route path="/search" element={ <ProtectedRoute> <Search /> </ProtectedRoute> }/>
         <Route path="/createpost" element={ <ProtectedRoute> <CreatePost /> </ProtectedRoute> }/>
         <Route path="/chat" element={ <ProtectedRoute> <ChatPage /> </ProtectedRoute> }/>
