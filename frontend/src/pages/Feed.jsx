@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Post from "../components/Post";
 import FeedAside from "../components/FeedAside";
@@ -52,9 +53,33 @@ export default function FeedPage() {
         );
     }, []);
 
-    const handleDelete = useCallback((postId) => {
-        setPosts(prev => prev.filter(p => p._id !== postId));
-    }, []);
+    const handleDelete = useCallback(async (postId) => {
+        const loadingToast = toast.loading("Deleting post...");
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/posts/${postId}/discard`,
+                {
+                    method: "DELETE",
+                    credentials: "include",
+                }
+            );
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || "Delete failed");
+            }
+            
+            setPosts(prev => prev.filter(p => p._id !== postId));
+            toast.success("Post deleted successfully", {
+                id: loadingToast,
+            });
+    
+        } catch (err) {
+            toast.error(err.message || "Post deletion failed", {
+                id: loadingToast,
+            });
+        }
+    }, [setPosts]);
+    
 
     if (loading) {
         return (

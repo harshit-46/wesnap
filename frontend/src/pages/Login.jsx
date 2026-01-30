@@ -157,7 +157,7 @@ export default function Login() {
                         type="submit"
                         disabled={isLoading}
                         className={`w-full py-3.5 rounded-xl font-medium text-base transition-all shadow-sm
-                            ${isLoading
+        ${isLoading
                                 ? "bg-neutral-300 text-neutral-500 cursor-not-allowed"
                                 : "bg-neutral-900 text-white hover:bg-neutral-800 active:bg-neutral-950"
                             }`}
@@ -166,22 +166,21 @@ export default function Login() {
                             <>
                                 <svg
                                     className="animate-spin -ml-1 mr-2.5 h-5 w-5 inline"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
+                                    viewBox="0 0 80 80"
+                                    xmlns="http://www.w3.org/2000/svg"
                                 >
-                                    <circle
-                                        className="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    />
-                                    <path
-                                        className="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="1" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.9" transform="rotate(30 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.8" transform="rotate(60 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.7" transform="rotate(90 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.6" transform="rotate(120 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.5" transform="rotate(150 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.4" transform="rotate(180 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.3" transform="rotate(210 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.25" transform="rotate(240 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.2" transform="rotate(270 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.15" transform="rotate(300 40 40)" />
+                                    <line x1="40" y1="10" x2="40" y2="20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" opacity="0.1" transform="rotate(330 40 40)" />
                                 </svg>
                                 Signing in...
                             </>

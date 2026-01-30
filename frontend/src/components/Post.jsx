@@ -1,11 +1,13 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback , useEffect , useRef } from "react";
 import { Link } from "react-router-dom";
 import { Heart, MessageCircle, MoreVertical } from "lucide-react";
 import { timeAgo } from "../utils/timeAgo";
 import { useAuth } from "../context/useAuth";
+//import "../assets/css/post.css";
 
 function Post({ post, index, onLike, onDelete, onCommentAdded }) {
     const { user } = useAuth();
+    const menuRef = useRef(null);
 
     const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState([]);
@@ -82,6 +84,31 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
         [commentText, post._id, onCommentAdded]
     );
 
+    const handleReportPost = async (postId) => {
+        try {
+            console.log("Reported post:", postId);
+            // API call later
+        } catch (err) {
+            console.error("Report failed", err);
+        }
+    };    
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (menuRef.current && !menuRef.current.contains(e.target)) {
+                setShowMenu(false);
+            }
+        };
+    
+        if (showMenu) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+    
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showMenu]);
+
     const isOwnPost =
         user?.username && post?.userId?.username
             ? user.username === post.userId.username
@@ -119,10 +146,12 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
                     </div>
                 </div>
 
-                <div className="relative">
+                <div 
+                ref={menuRef}
+                className="relative">
                     <button
                         onClick={toggleMenu}
-                        className="text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition p-1"
+                        className="text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 cursor-pointer transition p-1"
                     >
                         <MoreVertical size={20} />
                     </button>
@@ -136,13 +165,21 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
                         ">
                             {isOwnPost ? (
                                 <button
-                                    onClick={() => onDelete?.(post._id)}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition"
+                                    onClick={() => {
+                                        onDelete?.(post._id);
+                                        setShowMenu(false);
+                                    }}
+                                    className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
                                 >
                                     Delete Post
                                 </button>
                             ) : (
-                                <button className="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition">
+                                <button 
+                                onClick={ () => {
+                                    setShowMenu(false);
+                                    handleReportPost?.(post._id);
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition cursor-pointer">
                                     Report Post
                                 </button>
                             )}
@@ -155,25 +192,24 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
                 {post.content}
             </p>
 
-            {post.imageUrl && (
-                <img
-                    src={post.imageUrl}
-                    alt="Post"
-                    loading={index < 3 ? "eager" : "lazy"}
-                    height={600}
-                    width={600}
-                    className="rounded-xl mb-4 w-full object-cover border border-neutral-100 dark:border-neutral-800"
-                />
-            )}
+            <div className="post-image-wrapper mb-4">
+                {post.imageUrl && (
+                    <img
+                        src={post.imageUrl}
+                        alt="Post"
+                        loading={index < 3 ? "eager" : "lazy"}
+                        className="max-h-130 object-contain max-w-full border border-neutral-100 dark:border-neutral-800"
+                    />
+                )}
+            </div>
 
             <div className="flex items-center gap-6 pt-3 border-t border-neutral-200 dark:border-neutral-800">
                 <button
                     onClick={handleLike}
-                    className={`flex items-center gap-2 text-sm font-medium transition ${
-                        post.likedByMe
+                    className={`flex items-center gap-2 text-sm font-medium cursor-pointer transition ${post.likedByMe
                             ? "text-red-600 dark:text-red-600"
                             : "text-neutral-500 dark:text-neutral-400"
-                    }`}
+                        }`}
                 >
                     <Heart
                         size={20}
@@ -185,7 +221,7 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
 
                 <button
                     onClick={toggleComments}
-                    className="flex items-center gap-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 transition"
+                    className="flex items-center gap-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 transition cursor-pointer"
                 >
                     <MessageCircle size={20} />
                     <span>{post.commentCount}</span>
