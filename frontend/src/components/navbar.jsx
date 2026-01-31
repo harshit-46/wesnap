@@ -16,17 +16,18 @@ function Navbar() {
     const { user, logout, updateTheme } = useAuth();
     const location = useLocation();
 
+    const authRoutes = [ "/" , "/signup", "/resetpassword"];
+
+    const isAuthRoute = authRoutes.includes(location.pathname) || location.pathname.startsWith("/reset-password/");
+
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const settingsRef = useRef(null);
+    const [isHovered , setIsHovered] = useState(false);
 
-    if (!user) return null;
-
-    const currentUser = user;
-    const isDark = user.theme === 'dark';
+    const isDark = user?.theme === 'dark';
     const pathname = location.pathname;
 
     const isFeedPage = pathname === '/feed';
-    const [isHovered , setIsHovered] = useState(false);
 
     const isExpanded = isHovered || isFeedPage;
 
@@ -73,10 +74,16 @@ function Navbar() {
         await logout();
     }, [logout]);
 
+    if (!user) return null;
+    const currentUser = user;
+
+    if(isAuthRoute) return null;
+
     return (
         <aside 
             className={`
-                h-screen
+            fixed top-0 left-0 z-30    
+            h-screen
                 bg-[#F9FAFB] dark:bg-neutral-950
                 transition-all duration-300 ease-in-out
                 ${isExpanded ? 'w-64' : 'w-20'}
@@ -88,7 +95,6 @@ function Navbar() {
             }}
         >
             <div className="flex flex-col h-full px-4 py-6">
-
                 <Link to="/feed" className="flex items-center gap-3 mb-8 overflow-hidden">
                     <div className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center shadow-sm shrink-0">
                         <span className="text-lg font-bold text-white">V</span>

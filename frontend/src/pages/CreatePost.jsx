@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
 import { useAuth } from '../context/useAuth';
 import useCreatePost from '../hooks/useCreatePost';
 
@@ -84,10 +83,6 @@ export default function CreatePost() {
 
     return (
         <div className="min-h-screen bg-[#F9FAFB] dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex">
-            <div className="fixed left-0 top-0 h-screen w-64 bg-[#F9FAFB] dark:bg-neutral-950 hidden lg:block">
-                <Navbar />
-            </div>
-
             <main className="flex-1 lg:ml-64 px-4 py-10">
                 <div className="max-w-2xl mx-auto space-y-8">
                     <div className="flex items-center gap-4 mb-8">
