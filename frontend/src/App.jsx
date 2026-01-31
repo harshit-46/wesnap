@@ -12,6 +12,9 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ChatPage from "./pages/Chat";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import FeedSkeleton from "./components/skeletons/FeedSkeleton";
+import Settings from "./pages/Settings";
+import Activity from "./pages/Activity";
+import Report from "./pages/Report";
 
 const FeedPage = lazy(() => import("./pages/Feed"));
 
@@ -38,6 +41,9 @@ const App = () => {
           }
         />
         <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
+        <Route path="/accounts" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/your_activity" element={<ProtectedRoute><Activity /></ProtectedRoute>} />
+        <Route path="/report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
         <Route path="/createpost" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
         <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
         <Route path="/chat/t/:conversationId" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />

@@ -192,14 +192,14 @@ function Navbar() {
                                 </div>
 
                                 <div className="py-2 px-2">
-                                    <MenuLink to="/settings/account" onClick={closeSettings}>
-                                        Account Settings
+                                    <MenuLink to="/accounts" onClick={closeSettings}>
+                                        Settings
                                     </MenuLink>
-                                    <MenuLink to="/settings/privacy" onClick={closeSettings}>
-                                        Privacy & Security
+                                    <MenuLink to="/your_activity" onClick={closeSettings}>
+                                        Your activity
                                     </MenuLink>
-                                    <MenuLink to="/settings/notifications" onClick={closeSettings}>
-                                        Notifications
+                                    <MenuLink to="/report" onClick={closeSettings}>
+                                        Report a problem
                                     </MenuLink>
 
                                     <button
