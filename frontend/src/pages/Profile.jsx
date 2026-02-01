@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import toast from "react-hot-toast";
 import Post from '../components/Post';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
@@ -104,7 +105,32 @@ export default function ProfilePage() {
         );
     }, []);
 
-    const handleDelete = useCallback(() => { }, []);
+    const handleDelete = useCallback(async (postId) => {
+        const loadingToast = toast.loading("Deleting post...");
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/posts/${postId}/discard`,
+                {
+                    method: "DELETE",
+                    credentials: "include",
+                }
+            );
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || "Delete failed");
+            }
+
+            setPosts(prev => prev.filter(p => p._id !== postId));
+            toast.success("Post deleted successfully", {
+                id: loadingToast,
+            });
+
+        } catch (err) {
+            toast.error(err.message || "Post deletion failed", {
+                id: loadingToast,
+            });
+        }
+    }, [setPosts]);
 
     const handleFollow = useCallback(async (userId) => {
         setFollowInfo(prev => ({

@@ -36,13 +36,21 @@ router.post("/", isLoggedIn, async (req, res) => {
             following: userId,
         });
 
-        const followersCount = await followModel.countDocuments({
-            following: userId,
-        });
+        await Promise.all([
+            userModel.findByIdAndUpdate(userId, {
+                $inc: { followersCount: 1 },
+            }),
+            userModel.findByIdAndUpdate(currentUserId, {
+                $inc: { followingCount: 1 },
+            }),
+        ]);
+
+        const updatedUser = await userModel.findById(userId)
+            .select("followersCount");
 
         res.status(201).json({
             message: "Followed successfully",
-            followersCount,
+            followersCount : updatedUser.followersCount
         });
     } catch (err) {
         console.error("FOLLOW ERROR:", err);
@@ -65,19 +73,12 @@ router.get("/status/:username", isLoggedIn, async (req, res) => {
             following: profileUser._id,
         });
 
-        const followersCount = await followModel.countDocuments({
-            following: profileUser._id,
-        });
-
-        const followingCount = await followModel.countDocuments({
-            follower: profileUser._id,
-        });
-
         res.json({
             isFollowing: !!isFollowing,
-            followersCount,
-            followingCount,
+            followersCount : profileUser.followersCount,
+            followingCount : profileUser.followingCount
         });
+
     } catch (err) {
         console.error("FOLLOW STATUS ERROR:", err);
         res.status(500).json({ message: "Server error" });
@@ -106,14 +107,23 @@ router.delete("/:userId", isLoggedIn, async (req, res) => {
             return res.status(400).json({ message: "You are not following this user" });
         }
 
-        const followersCount = await followModel.countDocuments({
-            following: targetUserId,
-        });
+        await Promise.all([
+            userModel.findByIdAndUpdate(targetUserId, {
+                $inc: { followersCount: -1 },
+            }),
+            userModel.findByIdAndUpdate(currentUserId, {
+                $inc: { followingCount: -1 },
+            }),
+        ]);
+
+        const updatedUser = await userModel.findById(targetUserId)
+            .select("followersCount");
 
         res.json({
             message: "Unfollowed successfully",
-            followersCount,
+            followersCount : updatedUser.followersCount
         });
+
     } catch (err) {
         console.error("UNFOLLOW ERROR:", err);
         res.status(500).json({ message: "Server error" });

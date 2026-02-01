@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/useAuth';
 
 export default function Activity() {
     const { user } = useAuth();
+    const userId = user ? user._id : null;
     const [activeTab, setActiveTab] = useState('all');
 
     // Mock activity data
@@ -79,12 +80,39 @@ export default function Activity() {
         }
     ];
 
-    const stats = {
-        posts: 24,
-        comments: 156,
-        likes: 1240,
-        followers: 3456
-    };
+    const [userStats, setUserStats] = useState({
+        likes: 0,
+        comments: 0,
+        posts: 0,
+        followers: 0
+    });
+
+    useEffect(() => {
+        if (!userId) {
+            return;
+        }
+
+        const fetchUserStats = async () => {
+            try {
+                const res = await fetch(`http://localhost:3000/api/stats/${userId}`,
+                    { credentials: 'include' }
+                );
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error ${res.status}`);
+                }
+
+                const userData = await res.json();
+                setUserStats({ likes: userData.stats.likesCount, comments: userData.stats.commentsCount, posts: userData.stats.postsCount, followers: userData.stats.followersCount });
+
+            } catch (err) {
+                console.error("Could not fetch user stats", err);
+            }
+        };
+
+        fetchUserStats();
+
+    }, [userId]);
 
     const getActivityIcon = (type) => {
         switch (type) {
@@ -135,19 +163,19 @@ export default function Activity() {
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:shadow-md transition-shadow">
                             <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-1">Posts</p>
-                            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{stats.posts}</p>
+                            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{userStats.posts}</p>
                         </div>
                         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:shadow-md transition-shadow">
                             <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-1">Comments</p>
-                            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{stats.comments}</p>
+                            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{userStats.comments}</p>
                         </div>
                         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:shadow-md transition-shadow">
                             <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-1">Likes</p>
-                            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{stats.likes}</p>
+                            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{userStats.likes}</p>
                         </div>
                         <div className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-4 hover:shadow-md transition-shadow">
                             <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-1">Followers</p>
-                            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{stats.followers}</p>
+                            <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{userStats.followers}</p>
                         </div>
                     </div>
                 </header>
@@ -160,8 +188,8 @@ export default function Activity() {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`pb-3 text-sm font-medium transition-colors relative ${activeTab === tab
-                                        ? 'text-zinc-900 dark:text-zinc-100'
-                                        : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                                    ? 'text-zinc-900 dark:text-zinc-100'
+                                    : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
                                     }`}
                             >
                                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -188,9 +216,9 @@ export default function Activity() {
                                 <div className="flex items-start gap-4">
                                     {/* Icon */}
                                     <div className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${activity.type === 'post' ? 'bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400' :
-                                            activity.type === 'comment' ? 'bg-green-100 dark:bg-green-950 text-green-600 dark:text-green-400' :
-                                                activity.type === 'like' ? 'bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400' :
-                                                    'bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400'
+                                        activity.type === 'comment' ? 'bg-green-100 dark:bg-green-950 text-green-600 dark:text-green-400' :
+                                            activity.type === 'like' ? 'bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400' :
+                                                'bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400'
                                         }`}>
                                         {getActivityIcon(activity.type)}
                                     </div>
@@ -275,7 +303,7 @@ export default function Activity() {
                 </div>
             </main>
 
-            <style jsx>{`
+            <style>{`
                 @keyframes fadeIn {
                     from {
                         opacity: 0;

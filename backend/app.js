@@ -14,6 +14,7 @@ const messageRoutes = require("./routes/message.routes");
 const apiConversationRoutes = require("./routes/conversation.routes");
 const apiForgotPasswordRoutes = require("./routes/apiReset");
 const apiDeletePostRoutes = require("./routes/apiDeletePost");
+const apiUserStatsRoutes = require("./routes/apiStats");
 
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
@@ -39,6 +40,7 @@ app.use("/api/reset", apiForgotPasswordRoutes);
 app.use("/api/users", apiUserRoutes);
 app.use("/api/posts", apiPostRoutes);
 app.use("/api/posts", apiLikeRoutes);
+app.use("/api/stats", apiUserStatsRoutes);
 app.use("/api/posts", apiDeletePostRoutes);
 app.use("/api/search", apiSearchRoutes);
 app.use("/api/follow", apiFollowRoutes);
