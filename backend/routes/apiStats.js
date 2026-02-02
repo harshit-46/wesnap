@@ -7,7 +7,6 @@ const isLoggedIn = require("../middlewares/isLoggedin");
 
 router.get("/:id" , isLoggedIn , async (req,res) => {
     const userId = req.params.id;
-    console.log("user id : ", userId);
 
     const user = await userModel.findById(userId).select("followersCount");
     const followersCount = user ? user.followersCount : 0;

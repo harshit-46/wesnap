@@ -1,9 +1,8 @@
-import React, { useState, useCallback , useEffect , useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Heart, MessageCircle, MoreVertical } from "lucide-react";
 import { timeAgo } from "../utils/timeAgo";
 import { useAuth } from "../context/useAuth";
-//import "../assets/css/post.css";
 
 function Post({ post, index, onLike, onDelete, onCommentAdded }) {
     const { user } = useAuth();
@@ -91,7 +90,7 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
         } catch (err) {
             console.error("Report failed", err);
         }
-    };    
+    };
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -99,11 +98,11 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
                 setShowMenu(false);
             }
         };
-    
+
         if (showMenu) {
             document.addEventListener("mousedown", handleClickOutside);
         }
-    
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
@@ -125,11 +124,22 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
             <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                     <Link to={`/u/${post.userId.username}`} className="shrink-0">
-                        <div className="w-11 h-11 rounded-full bg-neutral-900 flex items-center justify-center text-sm font-semibold text-white">
-                            {(post.userId?.name || post.userId?.username || "U")
-                                .charAt(0)
-                                .toUpperCase()}
+                        <div className="w-11 h-11 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center shrink-0">
+                            {post.userId?.avatar ? (
+                                <img
+                                    src={post.userId.avatar}
+                                    alt={post.userId?.name || "User avatar"}
+                                    className="h-full w-full object-cover"
+                                />
+                            ) : (
+                                <span className="text-sm font-semibold text-neutral-800 dark:text-white">
+                                    {(post.userId?.name || post.userId?.username || "U")
+                                        .charAt(0)
+                                        .toUpperCase()}
+                                </span>
+                            )}
                         </div>
+
                     </Link>
 
                     <div>
@@ -146,9 +156,9 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
                     </div>
                 </div>
 
-                <div 
-                ref={menuRef}
-                className="relative">
+                <div
+                    ref={menuRef}
+                    className="relative">
                     <button
                         onClick={toggleMenu}
                         className="text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 cursor-pointer transition p-1"
@@ -174,12 +184,12 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
                                     Delete Post
                                 </button>
                             ) : (
-                                <button 
-                                onClick={ () => {
-                                    setShowMenu(false);
-                                    handleReportPost?.(post._id);
-                                }}
-                                className="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition cursor-pointer">
+                                <button
+                                    onClick={() => {
+                                        setShowMenu(false);
+                                        handleReportPost?.(post._id);
+                                    }}
+                                    className="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition cursor-pointer">
                                     Report Post
                                 </button>
                             )}
@@ -207,8 +217,8 @@ function Post({ post, index, onLike, onDelete, onCommentAdded }) {
                 <button
                     onClick={handleLike}
                     className={`flex items-center gap-2 text-sm font-medium cursor-pointer transition ${post.likedByMe
-                            ? "text-red-600 dark:text-red-600"
-                            : "text-neutral-500 dark:text-neutral-400"
+                        ? "text-red-600 dark:text-red-600"
+                        : "text-neutral-500 dark:text-neutral-400"
                         }`}
                 >
                     <Heart

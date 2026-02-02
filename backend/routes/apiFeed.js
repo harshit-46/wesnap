@@ -27,7 +27,7 @@ router.get("/", isLoggedIn, async (req, res) => {
         const posts = await Post.find(query)
             .sort({ createdAt: -1 })
             .limit(10)
-            .populate("userId", "username name")
+            .populate("userId", "username name avatar")
             .lean();
 
         const enrichedPosts = posts.map(post => ({

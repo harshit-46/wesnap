@@ -85,7 +85,7 @@ export default function ProfilePage() {
         };
 
         fetchFollowInfo();
-    }, [profileUser, loggedInUser]);
+    }, [profileUser, username]);
 
     const { isFollowing, followersCount, followingCount } = followInfo;
 
@@ -262,11 +262,24 @@ export default function ProfilePage() {
                                     bg-neutral-900 flex items-center justify-center 
                                     text-4xl font-bold text-white shadow-md
                                 ">
-                                    {(profileUser.name || profileUser.username).charAt(0).toUpperCase()}
+                                    {profileUser ? (
+                                        <img
+                                            src={profileUser.avatar}
+                                            alt={profileUser.name || "User avatar"}
+                                            className="h-full w-full object-cover rounded-full"
+                                        />
+                                    ) : (
+                                        <span className="text-sm font-semibold text-neutral-800 dark:text-white">
+                                            {(profileUser.user.name|| profileUser.user.username || "U")
+                                                .charAt(0)
+                                                .toUpperCase()}
+                                        </span>
+                                    )}
                                 </div>
 
                                 {isOwnProfile ? (
-                                    <button className="
+                                    <button onClick={() => navigate('/accounts')}
+                                        className="
                                         mt-5 bg-neutral-100 dark:bg-neutral-800 
                                         hover:bg-neutral-200 dark:hover:bg-neutral-700 
                                         px-6 py-2.5 rounded-xl text-sm font-medium 
@@ -337,11 +350,10 @@ export default function ProfilePage() {
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`pb-4 text-sm font-medium transition ${
-                                    activeTab === tab
+                                className={`pb-4 text-sm font-medium transition ${activeTab === tab
                                         ? 'text-neutral-900 dark:text-neutral-100 border-b-2 border-neutral-900 dark:border-neutral-100'
                                         : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300'
-                                }`}
+                                    }`}
                             >
                                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
                             </button>
