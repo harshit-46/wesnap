@@ -1,12 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/useAuth';
+import { timeAgo } from '../utils/timeAgo';
 
 export default function Activity() {
     const { user } = useAuth();
     const userId = user ? user._id : null;
+    const [activities, setActivities] = useState([]);
     const [activeTab, setActiveTab] = useState('all');
 
+    useEffect(() => {
+        if (!userId) {
+            return;
+        }
+
+        const fetchActivities = async () => {
+            try {
+                const res = await fetch(`http://localhost:3000/api/activities/${userId}`,
+                    { credentials: 'include' }
+                );
+
+                if (!res.ok) {
+                    throw new Error(`HTTP error ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                setActivities(data.activities);
+                console.log("from frontend data received is :", data);
+            } catch (err) {
+                console.error("Could not fetch activities", err);
+            }
+        };
+
+        fetchActivities();
+
+    }, []);
+
+
+
     // Mock activity data
+
+    /*
     const activities = [
         {
             id: 1,
@@ -79,6 +113,7 @@ export default function Activity() {
             category: 'Design'
         }
     ];
+    */
 
     const [userStats, setUserStats] = useState({
         likes: 0,
@@ -207,7 +242,7 @@ export default function Activity() {
                         .filter(activity => activeTab === 'all' || activity.type === activeTab.slice(0, -1))
                         .map((activity, index) => (
                             <div
-                                key={activity.id}
+                                key={`${activity.type}-${activity.entityId}-${activity.timestamp}`}
                                 className="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-800 p-5 hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300 group"
                                 style={{
                                     animation: `fadeIn 0.4s ease-out ${index * 0.05}s both`
@@ -287,7 +322,7 @@ export default function Activity() {
                                         )}
 
                                         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                                            {activity.timestamp}
+                                            {timeAgo(activity.timestamp)}
                                         </p>
                                     </div>
                                 </div>

@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const postModel = require("../models/post");
+const commentModel = require("../models/comment");
 const isLoggedIn = require("../middlewares/isLoggedin");
 
 router.delete('/:postId/discard', isLoggedIn, async (req, res) => {
     try {
         const { postId } = req.params;
+        const userId = req.user._id;
 
         if (!mongoose.Types.ObjectId.isValid(postId)) {
             return res.status(400).json({ message: "Invalid post ID" });
@@ -23,6 +25,8 @@ router.delete('/:postId/discard', isLoggedIn, async (req, res) => {
         }
 
         await post.deleteOne();
+
+        const comments = await commentModel.deleteMany({userId , postId});
 
         return res.status(200).json({ message: "Post deleted successfully" });
 
