@@ -17,7 +17,6 @@ export default function Settings() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Preview instantly
         setAvatarFile(file);
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -25,7 +24,6 @@ export default function Settings() {
         };
         reader.readAsDataURL(file);
 
-        // Auto upload
         const formData = new FormData();
         formData.append("avatar", file);
 
