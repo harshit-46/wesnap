@@ -11,7 +11,7 @@ export const SocketProvider = ({ children }) => {
     useEffect(() => {
         if (!user) return;
 
-        const s = io("http://localhost:3000", {
+        const s = io(import.meta.env.VITE_API_URL, {
             withCredentials: true,
             autoConnect: true
         });
