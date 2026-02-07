@@ -1,6 +1,7 @@
 const http = require("http");
 const express = require('express');
 const cors = require('cors');
+const connectDB = require("./config/db");
 const apiAuthRoutes = require("./routes/apiAuth");
 const apiPostRoutes = require("./routes/apiPosts");
 const apiUserRoutes = require("./routes/apiUsers");
@@ -24,6 +25,8 @@ const { initSocket } = require("./socket/socket");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+connectDB();
 
 app.use(
     cors({

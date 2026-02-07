@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/vibely");
-
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
