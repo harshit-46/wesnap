@@ -35,13 +35,9 @@ exports.forgotPassword = async (req, res) => {
 
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-        await sendEmail({
-            to: user.email,
-            subject: "Reset your wesnap password",
-            html: emailHtml(resetUrl , user.name),
-        });
+        
 
-        res.status(200).json({ message: "Reset link sent" });
+        res.status(200).json({ message: "Reset link sent , (email skipped)" });
 
     } catch (err) {
         console.error("FORGOT PASSWORD ERROR MESSAGE:", err.message);
