@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
                         <div className="w-9 h-9 rounded-full bg-neutral-900 flex items-center justify-center">
                             <div className="w-5.5 h-5.5 border-2 border-white rounded-full" />
                         </div>
-                        <span className="text-2xl font-semibold tracking-tight text-neutral-900">Vibely</span>
+                        <span className="text-2xl font-semibold tracking-tight text-neutral-900">Wesnap</span>
                     </div>
 
                     <div className="bg-white border border-neutral-200 rounded-xl p-8 text-center shadow-sm">
@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
                     <div className="w-9 h-9 rounded-full bg-neutral-900 flex items-center justify-center">
                         <div className="w-5.5 h-5.5 border-2 border-white rounded-full" />
                     </div>
-                    <span className="text-2xl font-semibold tracking-tight text-neutral-900">Vibely</span>
+                    <span className="text-2xl font-semibold tracking-tight text-neutral-900">Wesnap</span>
                 </div>
 
                 <div className="mb-10">
