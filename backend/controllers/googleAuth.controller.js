@@ -58,7 +58,8 @@ exports.googleCallback = async (req, res) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            sameSite: "lax",
+            secure : true,
+            sameSite: "none"
         });
 
         res.redirect("http://localhost:5173/feed");
