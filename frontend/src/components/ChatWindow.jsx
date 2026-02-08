@@ -135,6 +135,8 @@ function ChatWindow() {
             content: messageText,
         });
 
+        console.log("message sent:", messageText);
+
         socket.emit("stopTyping", { conversationId });
         setMessageText("");
     };

@@ -21,6 +21,8 @@ export const SocketProvider = ({ children }) => {
             console.log("✅ Socket connected:", s.id);
         });
 
+        console.log("this is fron context", user.name);
+
         s.on("connect_error", (err) => {
             console.error("❌ Socket error:", err.message);
         });
