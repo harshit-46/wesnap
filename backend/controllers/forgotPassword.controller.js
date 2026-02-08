@@ -44,7 +44,8 @@ exports.forgotPassword = async (req, res) => {
         res.status(200).json({ message: "Reset link sent" });
 
     } catch (err) {
-        console.error("FORGOT PASSWORD ERROR:", err);
+        console.error("FORGOT PASSWORD ERROR MESSAGE:", err.message);
+        console.error("FORGOT PASSWORD ERROR STACK:", err.stack);
         res.status(500).json({ message: "Server error" });
     }
 };
