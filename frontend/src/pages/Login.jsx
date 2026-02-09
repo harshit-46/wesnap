@@ -193,7 +193,7 @@ export default function Login() {
                 <button
                     disabled={isLoading}
                     onClick={() => {
-                        window.location.href = "http://localhost:3000/api/auth/google";
+                        window.location.href = "https://wesnap-server.onrender.com/api/auth/google";
                     }}
                     className={`mt-6 w-full py-3.5 px-4 bg-white border border-neutral-200 rounded-xl font-medium text-neutral-800 transition-all flex items-center justify-center gap-3 shadow-sm
                         ${isLoading ? "opacity-60 cursor-not-allowed" : "hover:bg-neutral-50 hover:border-neutral-300 active:bg-neutral-100"}`}
