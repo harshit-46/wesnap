@@ -20,10 +20,8 @@ export const SocketProvider = ({ children }) => {
         s.connect();
 
         s.on("connect", () => {
-            console.log("✅ Socket connected:", s.id);
+            console.log("✅ Socket connected");
         });
-
-        console.log("this is fron context", user.name);
 
         s.on("connect_error", (err) => {
             console.error("❌ Socket error:", err.message);

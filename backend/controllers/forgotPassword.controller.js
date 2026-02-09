@@ -1,6 +1,3 @@
-console.log("🔥 FORGOT PASSWORD CONTROLLER LOADED 🔥");
-
-
 const crypto = require("crypto");
 const User = require("../models/user");
 const sendEmail = require("../mailer/sendEmail");
@@ -33,9 +30,6 @@ exports.forgotPassword = async (req, res) => {
 
         await user.save();
 
-        console.log("FRONTEND_URL =", process.env.FRONTEND_URL);
-        console.log("RESEND_API_KEY =", process.env.RESEND_API_KEY ? "SET" : "MISSING");
-
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
         await sendEmail({
@@ -45,8 +39,6 @@ exports.forgotPassword = async (req, res) => {
         }).catch(err =>  {
             console.error("Email send failed!" , err);
         });
-
-        console.log("AFTER function CALLED!")
 
         return res.status(200).json({ message: "Reset link sent" });
 

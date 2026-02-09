@@ -26,7 +26,6 @@ export default function Activity() {
                 const data = await res.json();
 
                 setActivities(data.activities);
-                console.log("from frontend data received is :", data);
             } catch (err) {
                 console.error("Could not fetch activities", err);
             }
@@ -35,85 +34,6 @@ export default function Activity() {
         fetchActivities();
 
     }, []);
-
-
-
-    // Mock activity data
-
-    /*
-    const activities = [
-        {
-            id: 1,
-            type: 'post',
-            action: 'published',
-            title: 'How to Build Scalable React Applications',
-            timestamp: '2 hours ago',
-            engagement: { likes: 234, comments: 45, views: 1200 },
-            category: 'Engineering'
-        },
-        {
-            id: 2,
-            type: 'comment',
-            action: 'commented on',
-            title: 'The Future of Web Development',
-            timestamp: '5 hours ago',
-            engagement: { likes: 12, replies: 3 },
-            category: 'Discussion'
-        },
-        {
-            id: 3,
-            type: 'like',
-            action: 'liked',
-            title: 'Design Systems: A Complete Guide',
-            timestamp: '1 day ago',
-            category: 'Design'
-        },
-        {
-            id: 4,
-            type: 'post',
-            action: 'published',
-            title: 'Understanding TypeScript Generics',
-            timestamp: '2 days ago',
-            engagement: { likes: 567, comments: 89, views: 3400 },
-            category: 'Engineering'
-        },
-        {
-            id: 5,
-            type: 'share',
-            action: 'shared',
-            title: 'CSS Grid vs Flexbox: When to Use What',
-            timestamp: '3 days ago',
-            engagement: { shares: 23 },
-            category: 'Design'
-        },
-        {
-            id: 6,
-            type: 'comment',
-            action: 'commented on',
-            title: 'Remote Work Best Practices',
-            timestamp: '4 days ago',
-            engagement: { likes: 8, replies: 2 },
-            category: 'Career'
-        },
-        {
-            id: 7,
-            type: 'post',
-            action: 'published',
-            title: 'State Management in Modern React',
-            timestamp: '5 days ago',
-            engagement: { likes: 445, comments: 67, views: 2100 },
-            category: 'Engineering'
-        },
-        {
-            id: 8,
-            type: 'like',
-            action: 'liked',
-            title: 'Accessibility in Web Design',
-            timestamp: '1 week ago',
-            category: 'Design'
-        }
-    ];
-    */
 
     const [userStats, setUserStats] = useState({
         likes: 0,

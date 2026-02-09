@@ -33,8 +33,6 @@ export default function ResetPasswordPage() {
             );
 
             const data = await res.json();
-
-            console.log("RESET RESPONSE:", data);
             
             if (!res.ok) {
                 throw new Error(data.message);
