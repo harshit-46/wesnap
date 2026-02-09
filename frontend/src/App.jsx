@@ -15,10 +15,17 @@ import FeedSkeleton from "./components/skeletons/FeedSkeleton";
 import Settings from "./pages/Settings";
 import Activity from "./pages/Activity";
 import Report from "./pages/Report";
+import { useAuth } from "./context/useAuth";
+import SplashScreen from "./components/Splash";
 
 const FeedPage = lazy(() => import("./pages/Feed"));
 
 const App = () => {
+
+  const { loading } = useAuth();
+
+  if(loading) return <SplashScreen/>
+
   return (
     <div className="relative min-h-screen bg-zinc-950 text-zinc-100 antialiased">
       <Toaster position="top-center" reverseOrder={false} />
