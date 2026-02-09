@@ -43,9 +43,16 @@ export default function Login() {
             if (!err.response) {
                 setError("Server not reachable. Please try again.");
             } else {
-                setError(err.response?.data?.message || "Invalid credentials");
+                const msg = err.response?.data?.message;
+
+                if (msg === "Please sign in using Google") {
+                    setError("This account uses Google sign-in. Please continue with Google.");
+                } else {
+                    setError(msg || "Invalid credentials");
+                }
             }
-        } finally {
+        }
+        finally {
             setIsLoading(false);
         }
     };
