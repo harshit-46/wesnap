@@ -12,18 +12,11 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-
-                console.log("Auth checking started!");
-
                 const res = await axios.get("/api/auth/me");
-                setUser(res.data.user);
-
-                console.log("Auth checking done user is : ",res.data.user);
+                setUser(res.data?.user ?? null);
             } catch {
                 setUser(null);
-                console.log("Auth check error user is null");
             } finally {
-                console.log("Auth is finally done! login page should appear!");
                 setLoading(false);
             }
         };
